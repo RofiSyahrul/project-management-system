@@ -1,0 +1,62 @@
+<!-- Navbar for table pagination -->
+<%_ if (numOfPages>1){ -%>
+<!-- adapted from: https://evdokimovm.github.io/javascript/nodejs/mongodb/pagination/expressjs/ejs/bootstrap/2017/08/20/create-pagination-with-nodejs-mongodb-express-and-ejs-step-by-step-from-scratch.html -->
+<nav aria-label="Table page">
+  <ul class="pagination text-center">
+    <!-- first -->
+    <%_ if (current>4) { -%>
+    <li class="page-item">
+      <a href="<%=url.includes('?') ? url.replace(`page=${current}`,`page=1`) : `?page=1`%>" class="page-link">First</a>
+    </li>
+    <%_} -%>
+    <!-- previous -->
+    <%_ if (current>1) { -%>
+    <li class="page-item">
+      <a href="<%=url.includes('?') ? url.replace(`page=${current}`,`page=${current-1}`) : `?page=${current-1}`%>"
+        class="page-link">Previous</a>
+    </li>
+    <%_} -%>
+    <!-- page numbers and ellipsises-->
+    <%_ let i = current>4 ? current-2 : 1; -%>
+    <!-- left ellipsis -->
+    <%_ if (i!==1) { -%>
+    <li class="page-item">
+      <a href="<%=url.includes('?') ? url.replace(`page=${current}`,`page=${current-3}`) : `?page=${current-3}`%>"
+        class="page-link">...</a>
+    </li>
+    <%_ } -%>
+    <%_ for(; i<=current+2 && i<=numOfPages; i++){ -%>
+    <!-- page numbers -->
+    <%_ if (i===current) { -%>
+    <!-- Active page -->
+    <li class="page-item active"><span class="page-link"><%=i%></span></li>
+    <%_ } else{ -%>
+    <!-- Nonactive page -->
+    <li class="page-item"> <a class="page-link"
+        href="<%=url.includes('?') ? url.replace(`page=${current}`,`page=${i}`) : `?page=${i}`%>"><%=i%></a> </li>
+    <%_ } -%>
+    <!-- right ellipsis -->
+    <%_ if (i==current+2 && i < numOfPages-1 ) { -%>
+    <li class="page-item">
+      <a href="<%=url.includes('?') ? url.replace(`page=${current}`,`page=${current+3}`) : `?page=${current+3}`%>"
+        class="page-link">...</a>
+    </li>
+    <%_ } -%>
+    <%_ } -%>
+    <!-- next -->
+    <%_ if (current < numOfPages) { -%>
+    <li class="page-item">
+      <a href="<%=url.includes('?') ? url.replace(`page=${current}`,`page=${current+1}`) : `?page=${current+1}`%>"
+        class="page-link">Next</a>
+    </li>
+    <%_} -%>
+    <!-- last -->
+    <%_ if (current < numOfPages-2) { -%>
+    <li class="page-item">
+      <a href="<%=url.includes('?') ? url.replace(`page=${current}`,`page=${numOfPages}`) : `?page=${numOfPages}`%>"
+        class="page-link">Last</a>
+    </li>
+    <%_} -%>
+  </ul>
+</nav>
+<%_ } -%>

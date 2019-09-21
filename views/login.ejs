@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Project Management System by: Rofi - Sign in</title>
+  <% include ./all-page/head %>
+</head>
+
+<body>
+  <div class="login-form">
+    <h1> <img src="/images/rho-pi.png" alt="" width="50px"> Project Management System</h1>
+    <form action="auth" method="POST" id="login">
+      <input class="form-control" type="email" name="email" placeholder="Email address" form="login" required>
+      <input class="form-control" type="password" name="password" placeholder="Password" form="login" required>
+      <div class="col-sm-12 custom-control custom-checkbox">
+        <input class="custom-control-input" type="checkbox" id="rememberMe" name="rememberMe" value="true"
+          aria-label="Remember me" form="login">
+        <label class="custom-control-label" for="rememberMe">Remember me</label>
+      </div>
+      <%_ if (loginAlert) { -%>
+      <div class="alert alert-danger"><%=loginAlert%></div>
+      <%_ } -%>
+      <input class="btn btn-primary" type="submit" value="Sign in">
+    </form>
+  </div>
+</body>
+
+</html>
