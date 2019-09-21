@@ -9,6 +9,33 @@
 <body>
   <% include ../all-page/header %>
   <div class="container" style="margin-top: 60px">
+    <form action="" method="GET">
+      <input type="hidden" name="page" value="1">
+    </form>
+    <%_ if (numOfPages>0){-%>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <%_ colNames.forEach(col => {-%>
+            <th scope="col"><%=col%></th>
+            <%_ });-%>
+          </tr>
+        </thead>
+        <tbody>
+          <%_ data.forEach(row => { -%>
+          <tr>
+            <%_ colPg.forEach(col => { -%>
+            <th><%=row[col]%></th>
+            <%_ }); -%>
+          </tr>
+          <%_ }); -%>
+        </tbody>
+      </table>
+      <!-- Pagination -->
+      <% include ../all-page/pagination %>
+    <%_ } else {-%>
+      <p>Projects are not found</p>
+    <%_ } -%>
     <!-- add button -->
     <a role="button" class="btn btn-primary my-1" href="/add">Add project</a>
   </div>
