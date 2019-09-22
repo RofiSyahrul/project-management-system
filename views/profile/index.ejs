@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <% include ../partials/head %>
+</head>
+
+<body>
+  <% include ../partials/header %>
+  <div class="card border-light mt-sr mx-5">
+    <h1 class="card-header bg-transparent">Profile</h1>
+    <!-- Edit profile -->
+    <div class="card-body">
+      <form action="" method="POST" id="editProfile">
+        <%_ forms.forEach(form => {-%>
+        <%_ if (form.type=='radio'){-%>
+        <fieldset class="form-group">
+          <div class="row">
+            <legend class="col-form-label col-sm-2 pt-0"><%=form.label%></legend>
+            <div class="col-sm-10">
+              <%_ form.options.forEach(opt =>{-%>
+              <div class="custom-control custom-radio">
+                <input class="custom-control-input" type="radio" name="<%=form.name%>"
+                  id="<%=opt.split(' ').join('_')%>" value="<%=opt%>" <%=form.value==opt ? 'checked' : ''%>>
+                <label class="custom-control-label" for="<%=opt.split(' ').join('_')%>">
+                  <%=opt%>
+                </label>
+              </div>
+              <%_ });-%>
+            </div>
+          </div>
+        </fieldset>
+        <%_ } else if (form.type=='checkbox') {-%>
+        <div class="form-group row">
+          <div class="col-sm-2"><%=form.label%></div>
+          <div class="col-sm-10">
+            <%_ form.options.forEach(opt => {-%>
+            <div class="custom-control custom-checkbox">
+              <input class="custom-control-input" type="checkbox" id="<%=opt%>" name="<%=form.name%>" value="<%=opt%>"
+                <%=form.value ? 'checked' : ''%>>
+              <label class="custom-control-label" for="<%=opt%>">
+                <%=opt%>
+              </label>
+            </div>
+            <%_ });-%>
+          </div>
+        </div>
+        <%_ } else {-%>
+        <div class="form-group row">
+          <label for="<%=form.name%>" class="col-sm-2 col-form-label"><%=form.label%></label>
+          <div class="col-sm-10">
+            <input type="<%=form.type%>" class="form-control" id="<%=form.name%>" placeholder="<%=form.label%>"
+              name="<%=form.name%>" maxlength="<%=form.maxlength%>" value="<%=form.value%>"
+              <%=form.name=='email' ? 'readonly' : ''%>>
+          </div>
+        </div>
+        <%_ }-%>
+        <%_ });-%>
+        <div class="form-group row">
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <%_ if (notifAlert) {-%>
+  <div class="alert alert-success alert-server" role="alert">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    <%-notifAlert%>
+  </div>
+  <%_ } -%>
+  <% include ../partials/footer %>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<form action="" method="GET" id="filter">
+  <input type="hidden" name="page" value="1" form="filter">
+  <%_ forms.forEach(form => {-%>
+  <div class="form-group row">
+    <!-- Checkbox & Label-->
+    <div class="custom-control custom-checkbox col-2">
+      <input class="custom-control-input" type="checkbox" id="<%=form.name%>" name="checkBox" value="<%=form.name%>"
+        aria-label="<%=form.name%>" form="filter" <%=checked.includes(form.name) ? 'checked' : ''%>>
+      <label class="custom-control-label" for="<%=form.name%>"><%=form.label%></label>
+    </div>
+    <!-- Input -->
+    <div class="col-10">
+      <%_ if (form.type==='select') {-%>
+      <select name="<%=form.name%>" form="filter" class="form-control">
+        <option disabled <%=checked.includes(form.name) ? '' : 'selected'%>>
+          Choose the <%=form.label.toLowerCase()%>
+        </option>
+        <%_ form.options.forEach(opt => { -%>
+        <option value="<%=opt%>" <%=checked.includes(form.name) ? (form.value==opt ? 'selected' : '') : ''%>>
+          <%=opt%>
+        </option>
+        <%_ });%>
+      </select>
+      <%_ } else {-%>
+      <input type="<%=form.type%>" class="form-control" name="<%=form.name%>" placeholder="<%=form.label%>"
+        form="filter" value="<%=checked.includes(form.name) ? form.value : ''%>">
+      <%_ }-%>
+    </div>
+  </div>
+  <%_ });%>
+  <!-- Search button -->
+  <div class="form-group row">
+    <button class="btn btn-primary" type="submit">Search</button>
+  </div>
+</form>

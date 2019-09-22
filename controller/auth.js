@@ -10,12 +10,11 @@ module.exports = pool => {
         if (password == pwd) {
           // password correct
           req.session.user = result.rows[0];
-          if (req.params.link){
+          if (req.params.link) {
             res.redirect(`/${req.params.link}/${req.session.user.userid}`);
-          }else{
-            res.redirect(`/projects/${req.session.user.userid}`)
+          } else {
+            res.redirect(`/projects/${req.session.user.userid}`);
           }
-          
         } else {
           // password incorrect
           req.flash("loginAlert", "Email and password does not match");

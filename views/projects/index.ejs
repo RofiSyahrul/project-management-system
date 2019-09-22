@@ -3,42 +3,41 @@
 
 <head>
   <title><%= title %></title>
-  <% include ../all-page/head %>
+  <% include ../partials/head %>
 </head>
 
 <body>
-  <% include ../all-page/header %>
-  <div class="container" style="margin-top: 60px">
-    <form action="" method="GET">
-      <input type="hidden" name="page" value="1">
-    </form>
-    <%_ if (numOfPages>0){-%>
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <%_ colNames.forEach(col => {-%>
-            <th scope="col"><%=col%></th>
-            <%_ });-%>
-          </tr>
-        </thead>
-        <tbody>
-          <%_ data.forEach(row => { -%>
-          <tr>
-            <%_ colPg.forEach(col => { -%>
-            <th><%=row[col]%></th>
-            <%_ }); -%>
-          </tr>
-          <%_ }); -%>
-        </tbody>
-      </table>
-      <!-- Pagination -->
-      <% include ../all-page/pagination %>
-    <%_ } else {-%>
-      <p>Projects are not found</p>
-    <%_ } -%>
-    <!-- add button -->
-    <a role="button" class="btn btn-primary my-1" href="/add">Add project</a>
+  <% include ../partials/header %>
+  <div class="card border-light mt-sr mx-5">
+    <h1 class="card-header bg-transparent">Projects</h1>
+    <div class="card-body">
+      <div class="card border-light">
+        <div class="card-body">
+          <!-- Filter -->
+          <h2>Filter</h2>
+          <div class="container">
+            <% include ../partials/form-filter %>
+          </div>
+        </div>
+      </div>
+      <div class="card border-light">
+        <div class="card-body">
+          <!-- Options -->
+          <h2>Options</h2>
+          <% include ../partials/options %>
+        </div>
+      </div>
+      <div class="card border-light">
+        <div class="card-body">
+          <!-- Table and Pagination -->
+          <% include ../partials/table %>
+          <!-- add button -->
+          <a role="button" class="btn btn-primary my-1" href="/projects/add">Add project</a>
+        </div>
+      </div>
+    </div>
   </div>
+  <% include ../partials/footer %>
 </body>
 
 </html>

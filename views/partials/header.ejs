@@ -1,7 +1,8 @@
 <header class="fixed-top">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <span class="navbar-brand mb-0 h1">
-      <img src="/images/rho-pi.png" width="25" height="auto" class="d-inline-block align-middle">Project Management System
+      <img src="/images/rho-pi.png" width="25" height="auto" class="d-inline-block align-middle">Project Management
+      System
     </span>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,11 +19,12 @@
         </li>
         <%_if (admin) {-%>
         <li class="nav-item<%=path=='/users' ? ' active' : ''%>">
-          <a class="nav-link" href="/users/<%=userid%>">User</a>
+          <a class="nav-link" href="/users/<%=userid%>">Users</a>
         </li>
         <%_}-%>
       </ul>
-      <a role="button" class="btn btn-success" href="/logout">Sign Out</a>
+
+      <a role="button" class="btn btn-primary" href="/logout">Sign Out</a>
     </div>
   </nav>
 </header>

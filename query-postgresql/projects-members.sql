@@ -18,7 +18,7 @@ WHERE users.userid IN (
 	)
 ) AND proj.projectid IN (
 	SELECT projectid FROM members WHERE userid = 1
-)
+) 
 GROUP BY proj.projectid ORDER BY proj.projectid;
 
 -- select column projectid, projectname, and members with member's name constraint

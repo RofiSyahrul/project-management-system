@@ -1,9 +1,9 @@
 // new method for string object to convert string to number or string with double quotes
-String.prototype.convert = function() {
-  if (this == "undefined" || this == "") return `''`;
-  if (Number(this).toString() !== "NaN") return Number(this);
-  return `'${this}'`;
-};
+// String.prototype.convert = function() {
+//   if (this == "undefined" || this == "") return `''`;
+//   if (Number(this).toString() !== "NaN") return Number(this);
+//   return `'${this}'`;
+// };
 
 module.exports = class Project {
   constructor(pool, userid, admin, limit = 2) {
@@ -25,7 +25,7 @@ module.exports = class Project {
     if (constraints.userid) {
       if (constraints.userid.toString().trim().length > 0) {
         subsubquery = `SELECT projectid FROM members WHERE userid = ${constraints.userid}`;
-        subquery = `SELECT userid FROM members WHER projectid IN ( ${subsubquery} )`;
+        subquery = `SELECT userid FROM members WHERE projectid IN ( ${subsubquery} )`;
         conditionals.push(
           `users.userid IN ( ${subquery} ) AND proj.projectid IN ( ${subsubquery} )`
         );
@@ -34,7 +34,7 @@ module.exports = class Project {
 
     if (constraints.memberName) {
       if (constraints.memberName.trim().length > 0) {
-        userQuery = `SELECT userid FROM users WHERE LOWER(concat(firstname, ' ', lastname)) = LOWER(${constraints.memberName.convert()})`;
+        userQuery = `SELECT userid FROM users WHERE LOWER(concat(firstname, ' ', lastname)) = LOWER('${constraints.memberName}')`;
         subsubquery = `SELECT projectid FROM members WHERE userid IN ( ${userQuery} )`;
         subquery = `SELECT userid FROM members WHERE projectid IN ( ${subsubquery} )`;
         conditionals.push(
@@ -51,9 +51,8 @@ module.exports = class Project {
     if (constraints.projectName) {
       if (constraints.projectName.trim().length > 0) {
         conditionals.push(
-          `LOWER(proj.projectname) LIKE %${constraints.projectName
-            .toLowerCase()
-            .convert()}%`
+          `LOWER(proj.projectname) LIKE '%${constraints.projectName
+            .toLowerCase()}%'`
         );
       }
     }
@@ -92,7 +91,7 @@ module.exports = class Project {
     return this.pool.query(sql);
   }
 
-  getAllmember() {
+  getAllMember() {
     let sql = `SELECT concat(users.firstname, ' ', users.lastname) member
     FROM users 
     INNER JOIN members ON members.userid = users.userid

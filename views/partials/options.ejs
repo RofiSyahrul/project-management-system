@@ -1,0 +1,28 @@
+<form action="" method="POST" id="opt">
+  <div class="row">
+    <h4 class="col-2">
+      Columns
+    </h4>
+    <%_ let n = options.length; -%>
+    <%_ let lower = 0, upper = 5; -%>
+    <%_ while(lower < n){-%>
+    <div class="col">
+      <%_ upper = n>upper ? upper : n; -%>
+      <%_ options.slice(lower,upper).forEach(opt => {-%>
+      <div class="custom-control custom-checkbox ">
+        <input class="custom-control-input" type="checkbox" name="options" value="<%=opt.name%>" id="opt<%=opt.name%>"
+          <%=columns.includes(opt.name) ? 'checked' : ''%>>
+        <label class="custom-control-label" for="opt<%=opt.name%>">
+          <%=opt.label%>
+        </label>
+      </div>
+      <%_ });-%>
+    </div>
+    <%_ lower += 5, upper += 5 -%>
+    <%_ }-%>
+  </div>
+  <!-- Apply button -->
+  <div class="form-group row mx-1">
+    <button class="btn btn-primary" type="submit">Apply</button>
+  </div>
+</form>

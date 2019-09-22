@@ -1,22 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const checkAuth = require('../controller/functions').checkAuth;
-const auth = require('../controller/auth')
+const checkAuth = require("../controller/functions").checkAuth;
+const auth = require("../controller/auth");
 
-module.exports = (pool) => {
+module.exports = pool => {
   /* GET login page. */
-  router.get('/', checkAuth, (req, res) => {
+  router.get("/", checkAuth, (req, res) => {
     res.redirect(`/projects/${req.session.user.userid}`);
   });
-  
-  router.post('/:link/auth', auth(pool));
 
-  router.post('/auth', auth(pool));
+  router.post("/:link/auth", auth(pool));
 
-  router.get('/logout', (req,res) => {
+  router.post("/auth", auth(pool));
+
+  router.get("/logout", (req, res) => {
     req.session.user = undefined;
-    res.redirect('/');
+    res.redirect("/");
   });
 
   return router;
-}
+};

@@ -1,0 +1,38 @@
+<!-- TABLE -->
+<%_ if (numOfPages>0 && colNames.length>0){-%>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <%_ colNames.forEach(col => {-%>
+      <th scope="col"><%=col%></th>
+      <%_ });-%>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%_ data.forEach(row => { -%>
+    <tr>
+      <%_ colPg.forEach(col => { -%>
+      <td>
+        <%_ if(col=='projectid'){ -%>
+        <a href="overview/<%=row[col]%>"><%=row[col]%></a>
+        <%_ } else{ -%>
+        <%=row[col]%>
+        <%_ } -%>
+      </td>
+      <%_ }); -%>
+      <td>
+        <a href="edit/<%=row.projectid%>" role="button" class="btn btn-success mr-1">Edit</a>
+        <a href="delete/<%=row.projectid%>" role="button" class="btn btn-danger">Delete</a>
+      </td>
+    </tr>
+    <%_ }); -%>
+  </tbody>
+</table>
+<!-- Pagination -->
+<% include ./pagination %>
+<%_ } else if (numOfPages==0) {-%>
+<h5>Projects are not found</h5>
+<%_ } else {-%>
+<h5>No column to be displayed</h5>
+<%_ } -%>
