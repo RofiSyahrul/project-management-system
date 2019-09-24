@@ -70,14 +70,12 @@ pre {
   line-height: 18.5714px;
 }
 
-.mt-sr {
-  margin-top: 60px;
-}
-
 html,
 body {
   height: 100%;
-  font-family: Ubuntu
+  font-family: Ubuntu;
+  min-height: 75rem;
+  padding-top: 1.5rem;
 }
 
 .form-signin {

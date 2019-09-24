@@ -11,36 +11,33 @@ module.exports = class Project {
     this.userid = userid;
     this.admin = admin;
     this.limit = limit;
+    this.conditional = "";
     this.sqlPart =
       "FROM users INNER JOIN members ON members.userid = users.userid INNER JOIN projects proj ON proj.projectid = members.projectid";
   }
 
+  createSubquery(userid) {
+    const subsubquery = `SELECT projectid FROM members WHERE userid = ${userid}`;
+    const subquery = `SELECT userid FROM members WHERE projectid IN ( ${subsubquery} )`;
+    return { subsubquery, subquery };
+  }
+
   getConditional(constraints = {}) {
-    // if the user is not admin, the user can see his/her projects only
-    if (!this.admin) constraints.userid = this.userid;
-
     let conditionals = [];
-    let userQuery, subsubquery, subquery;
 
-    if (constraints.userid) {
-      if (constraints.userid.toString().trim().length > 0) {
-        subsubquery = `SELECT projectid FROM members WHERE userid = ${constraints.userid}`;
-        subquery = `SELECT userid FROM members WHERE projectid IN ( ${subsubquery} )`;
-        conditionals.push(
-          `users.userid IN ( ${subquery} ) AND proj.projectid IN ( ${subsubquery} )`
-        );
-      }
+    // if the user is not admin, the user can see his/her projects only
+    if (!this.admin) {
+      const { subsubquery, subquery } = this.createSubquery(this.userid);
+      conditionals.push(
+        `users.userid IN ( ${subquery} ) AND proj.projectid IN ( ${subsubquery} )`
+      );
     }
 
-    if (constraints.memberName) {
-      if (constraints.memberName.trim().length > 0) {
-        userQuery = `SELECT userid FROM users WHERE LOWER(concat(firstname, ' ', lastname)) = LOWER('${constraints.memberName}')`;
-        subsubquery = `SELECT projectid FROM members WHERE userid IN ( ${userQuery} )`;
-        subquery = `SELECT userid FROM members WHERE projectid IN ( ${subsubquery} )`;
-        conditionals.push(
-          `users.userid IN ( ${subquery} ) AND proj.projectid IN ( ${subsubquery} )`
-        );
-      }
+    if (constraints.userId) {
+      const { subsubquery, subquery } = this.createSubquery(constraints.userId);
+      conditionals.push(
+        `users.userid IN ( ${subquery} ) AND proj.projectid IN ( ${subsubquery} )`
+      );
     }
 
     if (constraints.projectId) {
@@ -51,8 +48,7 @@ module.exports = class Project {
     if (constraints.projectName) {
       if (constraints.projectName.trim().length > 0) {
         conditionals.push(
-          `LOWER(proj.projectname) LIKE '%${constraints.projectName
-            .toLowerCase()}%'`
+          `LOWER(proj.projectname) LIKE '%${constraints.projectName.toLowerCase()}%'`
         );
       }
     }
@@ -80,7 +76,7 @@ module.exports = class Project {
     const pg = {
       id: "proj.projectid",
       name: "proj.projectname",
-      member: `string_agg(concat(users.firstname, ' ', users.lastname), ', ') member`
+      member: `string_agg(concat(users.firstname, ' ', users.lastname), ', ' ORDER BY users.firstname) member`
     };
     const colPg = columns.map(col => pg[col]);
 
@@ -91,12 +87,74 @@ module.exports = class Project {
     return this.pool.query(sql);
   }
 
-  getAllMember() {
-    let sql = `SELECT concat(users.firstname, ' ', users.lastname) member
-    FROM users 
-    INNER JOIN members ON members.userid = users.userid
-    GROUP BY users.userid ORDER BY users.userid`;
+  static getMembers(pool, projectId) {
+    let conditional = "";
+    if (projectId) {
+      conditional = `INNER JOIN members USING (userid) WHERE projectid = ${projectId}`;
+    }
+    let sql = `SELECT userid, CONCAT(firstname, ' ', lastname) member FROM users ${conditional}
+    ORDER BY firstname`;
+    return pool.query(sql);
+  }
 
+  insertMember(projectId = 1, usersId = []) {
+    if (!(usersId instanceof Array)) usersId = [usersId];
+    const values = usersId
+      .map(userId => `(${projectId}, ${userId})`)
+      .join(", ");
+    const sql = `INSERT INTO members (projectid, userid) VALUES ${values}`;
     return this.pool.query(sql);
+  }
+
+  save(name = "", usersId = []) {
+    return new Promise((resolve, reject) => {
+      if (usersId == undefined || name == "") resolve("No projects added");
+      else {
+        const sqlAddProject = `INSERT INTO projects (projectname) VALUES ($1)`;
+        this.pool
+          .query(sqlAddProject, [name])
+          .then(() => {
+            this.pool
+              .query(`SELECT MAX(projectid) FROM projects`)
+              .then(result => {
+                const maxId = Number(result.rows[0].max);
+                this.insertMember(maxId, usersId)
+                  .then(() => {
+                    resolve(`Project has been added`);
+                  })
+                  .catch(e => reject(e));
+              })
+              .catch(e => reject(e));
+          })
+          .catch(e => reject(e));
+      }
+    });
+  }
+
+  update(projectId = 1, name = "", usersId = []) {
+    return new Promise((resolve, reject) => {
+      if (usersId == undefined || name == "") {
+        resolve(`Project #${projectId} is not updated`);
+      } else {
+        const sqlProject = `UPDATE projects SET projectname = $1 WHERE projectid = $2`;
+        const sqlDelMember = `DELETE FROM members WHERE projectid = $1`;
+        const updateProject = this.pool.query(sqlProject, [name, projectId]);
+        const deleteMember = this.pool.query(sqlDelMember, [projectId]);
+        Promise.all([updateProject, deleteMember])
+          .then(() => {
+            this.insertMember(projectId, usersId)
+              .then(() => {
+                resolve(`Project #${projectId} has been updated`);
+              })
+              .catch(e => reject(e));
+          })
+          .catch(e => reject(e));
+      }
+    });
+  }
+
+  del(projectId = 1) {
+    const sql = 'DELETE FROM projects WHERE projectid = $1';
+    return this.pool.query(sql, [projectId])
   }
 };

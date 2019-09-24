@@ -1,6 +1,6 @@
 -- select column projectid, projectname, and members without constraint
 SELECT proj.projectid, proj.projectname, 
-string_agg(concat(users.firstname, ' ', users.lastname), ', ') member
+string_agg(concat(users.firstname, ' ', users.lastname), ', ' ORDER BY users.firstname) member
 FROM users 
 INNER JOIN members ON members.userid = users.userid
 INNER JOIN projects proj ON proj.projectid = members.projectid
@@ -8,7 +8,7 @@ GROUP BY proj.projectid ORDER BY proj.projectid;
 
 -- select column projectid, projectname, and members with userid constraint
 SELECT proj.projectid, proj.projectname, 
-string_agg(concat(users.firstname, ' ', users.lastname), ', ') member
+string_agg(concat(users.firstname, ' ', users.lastname), ', ' ORDER BY users.firstname) member
 FROM users 
 INNER JOIN members ON members.userid = users.userid
 INNER JOIN projects proj ON proj.projectid = members.projectid
@@ -23,7 +23,7 @@ GROUP BY proj.projectid ORDER BY proj.projectid;
 
 -- select column projectid, projectname, and members with member's name constraint
 SELECT proj.projectid, proj.projectname, 
-string_agg(concat(users.firstname, ' ', users.lastname), ', ') member
+string_agg(concat(users.firstname, ' ', users.lastname), ', ' ORDER BY users.firstname) member
 FROM users 
 INNER JOIN members ON members.userid = users.userid
 INNER JOIN projects proj ON proj.projectid = members.projectid
@@ -46,7 +46,7 @@ GROUP BY proj.projectid ORDER BY proj.projectid;
 
 -- select column projectid, projectname, and members with projectid constraint
 SELECT proj.projectid, proj.projectname, 
-string_agg(concat(users.firstname, ' ', users.lastname), ', ') member
+string_agg(concat(users.firstname, ' ', users.lastname), ', ' ORDER BY users.firstname) member
 FROM users 
 INNER JOIN members ON members.userid = users.userid
 INNER JOIN projects proj ON proj.projectid = members.projectid
@@ -55,7 +55,7 @@ GROUP BY proj.projectid ORDER BY proj.projectid;
 
 -- select column projectid, projectname, and members with project's name constraint
 SELECT proj.projectid, proj.projectname, 
-string_agg(concat(users.firstname, ' ', users.lastname), ', ') member
+string_agg(concat(users.firstname, ' ', users.lastname), ', ' ORDER BY users.firstname) member
 FROM users 
 INNER JOIN members ON members.userid = users.userid
 INNER JOIN projects proj ON proj.projectid = members.projectid
@@ -66,4 +66,4 @@ GROUP BY proj.projectid ORDER BY proj.projectid;
 SELECT concat(users.firstname, ' ', users.lastname) member
 FROM users 
 INNER JOIN members ON members.userid = users.userid
-GROUP BY users.userid ORDER BY users.userid
+GROUP BY users.userid ORDER BY CONCAT(firstname, ' ', lastname)

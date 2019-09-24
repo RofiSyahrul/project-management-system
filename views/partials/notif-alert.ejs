@@ -1,0 +1,14 @@
+<%_ if (notifAlert) {-%>
+<%_ console.log(notifAlert)-%>
+<div class="alert alert-success alert-server" role="alert" data-delay="5000">
+  <button type="button" class="close" data-dismiss="alert">×</button>
+  <%-notifAlert%>
+</div>
+<script>
+  $('document').ready(() => {
+    setTimeout(() => {
+      $(".alert-success").hide(2000)
+    }, 3000)
+  })
+</script>
+<%_ } -%>

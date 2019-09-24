@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const checkAuth = require("../controller/functions").checkAuth;
+const checkAuth = require("../middlewares/check-auth");
 const User = require("../models/user");
 
 module.exports = (pool, limit = 2) => {
@@ -27,13 +27,17 @@ module.exports = (pool, limit = 2) => {
     ];
     forms = forms.map(form => Object.assign({ value: user[form.name] }, form));
     forms[3].value = "";
-    res.render("profile", {
-      title: `${user.firstname} ${user.lastname} | Profile`,
+    forms[5].value = forms[5].value ? ["Fulltime"] : ["Parttime"];
+    forms[4].optValues = forms[4].options;
+    forms[5].optValues = forms[5].options;
+    res.render("profile/view", {
+      title: `${user.nickname} | Profile`,
       path: "/profile",
       userid: user.userid,
       admin: user.admin,
       notifAlert: req.flash("notif")[0],
-      forms
+      forms,
+      submit: 'Update'
     });
   });
 
@@ -58,34 +62,37 @@ module.exports = (pool, limit = 2) => {
     const newProfile = [password, firstname, lastname, position, fulltime];
     const userid = parseInt(req.params.userid);
 
-    // update users table
-    User.editProfile(pool, newProfile, userid)
-      .then(() => {
-        // filter edited profile
-        let edited = profile
-          .filter((val, i) => val !== newProfile[i])
-          .map(val => profile.indexOf(val));
-        edited = edited.map(x => labels[x]);
-        if (edited.length > 0) {
+    // filter edited profile
+    let edited = profile
+      .filter((val, i) => val !== newProfile[i])
+      .map(val => profile.indexOf(val));
+    edited = edited.map(x => labels[x]);
+
+    if (edited.length > 0) {
+      // update users table
+      User.editProfile(pool, newProfile, userid)
+        .then(() => {
           const n = edited.length;
           const update =
             n == 1
-              ? edited[0]
-              : `${edited.slice(0, n - 1).join(", ")} and ${edited[n - 1]}`;
+              ? `${edited[0]} has`
+              : `${edited.slice(0, n - 1).join(", ")} and ${
+                  edited[n - 1]
+                } have`;
 
-          req.flash("notif", `<b>Success!</b> Successfully updated ${update}`);
+          req.flash("notif", `<b>Success!</b> ${update} been updated`);
           User.findById(pool, userid)
             .then(result => {
               req.session.user = result.rows[0];
               res.redirect(`/profile/${userid}`);
             })
             .catch(e => res.render("error", { message: "Error", error: e }));
-        } else {
-          req.flash("notif", "Nothing updated");
-          res.redirect(`/profile/${userid}`);
-        }
-      })
-      .catch(e => res.render("error", { message: "Error", error: e }));
+        })
+        .catch(e => res.render("error", { message: "Error", error: e }));
+    } else {
+      req.flash("notif", "Nothing updated");
+      res.redirect(`/profile/${userid}`);
+    }
   });
 
   return router;

@@ -1,18 +1,22 @@
 <!-- Navbar for table pagination -->
 <%_ if (numOfPages>1){ -%>
 <!-- adapted from: https://evdokimovm.github.io/javascript/nodejs/mongodb/pagination/expressjs/ejs/bootstrap/2017/08/20/create-pagination-with-nodejs-mongodb-express-and-ejs-step-by-step-from-scratch.html -->
-<nav aria-label="Table page">
+<nav id="pagination" aria-label="Table page" <%=url1.includes('page') ? 'tabindex=-1' : ''%>>
   <ul class="pagination text-center">
     <!-- first -->
     <%_ if (current>4) { -%>
     <li class="page-item">
-      <a href="<%=url.replace(`page=${current}`,`page=1`)%>" class="page-link">First</a>
+      <a href="<%=url.replace(`page=${current}`,`page=1`)%>" class="page-link">
+        <span class="fa fa-fast-backward" aria-hidden="true"></span>
+      </a>
     </li>
     <%_} -%>
     <!-- previous -->
     <%_ if (current>1) { -%>
     <li class="page-item">
-      <a href="<%=url.replace(`page=${current}`,`page=${current-1}`)%>" class="page-link">Previous</a>
+      <a href="<%=url.replace(`page=${current}`,`page=${current-1}`)%>" class="page-link">
+        <span class="fa fa-backward" aria-hidden="true"></span>
+      </a>
     </li>
     <%_} -%>
     <!-- page numbers and ellipsises-->
@@ -23,7 +27,8 @@
       <a href="<%=url.replace(`page=${current}`,`page=${current-3}`)%>" class="page-link">...</a>
     </li>
     <%_ } -%>
-    <%_ for(; i<=current+2 && i<=numOfPages; i++){ -%>
+    <%_ let upper = numOfPages==4 ? numOfPages : current+2-%>
+    <%_ for(; i<=upper && i<=numOfPages; i++){ -%>
     <!-- page numbers -->
     <%_ if (i===current) { -%>
     <!-- Active page -->
@@ -42,15 +47,26 @@
     <!-- next -->
     <%_ if (current < numOfPages) { -%>
     <li class="page-item">
-      <a href="<%=url.replace(`page=${current}`,`page=${current+1}`)%>" class="page-link">Next</a>
+      <a href="<%=url.replace(`page=${current}`,`page=${current+1}`)%>" class="page-link">
+        <span class="fa fa-forward" aria-hidden="true"></span>
+      </a>
     </li>
     <%_} -%>
     <!-- last -->
-    <%_ if (current < numOfPages-2) { -%>
+    <%_ if (current < numOfPages-3) { -%>
     <li class="page-item">
-      <a href="<%=url.replace(`page=${current}`,`page=${numOfPages}`)%>" class="page-link">Last</a>
+      <a href="<%=url.replace(`page=${current}`,`page=${numOfPages}`)%>" class="page-link">
+        <span class="fa fa-fast-forward" aria-hidden="true"></span>
+      </a>
     </li>
     <%_} -%>
   </ul>
 </nav>
+<%_ if(url1.includes('page')){-%>
+<script>
+  $(() => {
+    $("#pagination").focus();
+  })
+</script>
+<%_ }-%>
 <%_ } -%>

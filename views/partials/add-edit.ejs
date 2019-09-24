@@ -1,0 +1,53 @@
+<div class="container">
+  <form action="" method="POST">
+    <%_ forms.forEach(form => {-%>
+    <%_ if (form.type=='radio'){-%>
+    <fieldset class="form-group">
+      <div class="row">
+        <legend class="col-form-label col-12 col-sm-3 pt-0"><b><%=form.label%></b></legend>
+        <div class="col-12 col-sm-9">
+          <%_ form.optValues.forEach((opt,i) =>{-%>
+          <div class="custom-control custom-radio">
+            <input class="custom-control-input" type="radio" name="<%=form.name%>" id="<%=opt%>" value="<%=opt%>"
+              <%=form.value ? (form.value==opt ? 'checked' : '') : ''%>>
+            <label class="custom-control-label" for="<%=opt%>">
+              <%=form.options[i]%>
+            </label>
+          </div>
+          <%_ });-%>
+        </div>
+      </div>
+    </fieldset>
+    <%_ } else if (form.type=='checkbox') {-%>
+    <div class="form-group row">
+      <div class="col-12 col-sm-3"><b><%=form.label%></b></div>
+      <div class="col-12 col-sm-9">
+        <%_ form.optValues.forEach((opt,i) => {-%>
+        <div class="custom-control custom-checkbox">
+          <input class="custom-control-input" type="checkbox" id="<%=opt%>" name="<%=form.name%>" value="<%=opt%>"
+            <%=form.value ? (form.value.includes(opt) ? 'checked' : '') : ''%>>
+          <label class="custom-control-label" for="<%=opt%>">
+            <%=form.options[i]%>
+          </label>
+        </div>
+        <%_ });-%>
+      </div>
+    </div>
+    <%_ } else {-%>
+    <div class="form-group row">
+      <label for="<%=form.name%>" class="col-12 col-sm-3 col-form-label"><b><%=form.label%></b></label>
+      <div class="col-12 col-sm-9">
+        <input type="<%=form.type%>" id="<%=form.name%>" placeholder="<%=form.label%>" name="<%=form.name%>"
+          maxlength="<%=form.maxlength%>" value="<%=form.value ? form.value : ''%>"
+          <%=form.name=='email' ? 'readonly class=form-control-plaintext' : 'class=form-control'%>>
+      </div>
+    </div>
+    <%_ }-%>
+    <%_ });-%>
+    <div class="form-group row">
+      <div class="col-12 col-sm-3">
+        <button type="submit" class="btn btn-primary"><%=submit%></button>
+      </div>
+    </div>
+  </form>
+</div>

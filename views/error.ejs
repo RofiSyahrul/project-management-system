@@ -1,3 +1,15 @@
-<h1 style="color: magenta"><%= message %></h1>
-<h2 style="color: maroon"><%= error.status %></h2>
-<pre style="color: maroon"><%= error.stack %></pre>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Error</title>
+  <% include ./partials/head %>
+</head>
+
+<body>
+  <h1 style="color: magenta"><%= message %></h1>
+  <h2 style="color: maroon"><%= error.status %></h2>
+  <pre style="color: maroon"><%= error.stack %></pre>
+</body>
+
+</html>
