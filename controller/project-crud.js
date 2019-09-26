@@ -7,7 +7,8 @@ function createForm(membersName = [], membersUID = []) {
       name: "projectname",
       label: "Project Name",
       type: "text",
-      maxlength: 100
+      maxlength: 100,
+      ro: false
     },
     {
       name: "members",
@@ -73,6 +74,8 @@ module.exports = {
           res.render("projects/list", {
             title,
             path: "/projects",
+            projectPath: "",
+            tableName: "Projects",
             userid,
             admin,
             checked,
@@ -103,6 +106,7 @@ module.exports = {
     return (req, res) => {
       const userid = Number(req.session.user.userid);
       const columns = req.body.options || [];
+      const { page } = req.body;
 
       let projectOpt = req.session.user.projectopt;
       projectOpt = Object.keys(projectOpt).reduce((opts, key) => {
@@ -113,7 +117,7 @@ module.exports = {
       User.updateOpt(pool, "projectopt", projectOpt, userid)
         .then(() => {
           req.session.user.projectopt = projectOpt;
-          res.redirect(`/projects?page=1`);
+          res.redirect(`/projects?page=${page}`);
         })
         .catch(e => res.render("error", { message: "Error", error: e }));
     };
@@ -134,6 +138,7 @@ module.exports = {
             admin,
             forms,
             path: "/projects",
+            projectPath: "",
             submit: "Save"
           });
         })
@@ -194,6 +199,7 @@ module.exports = {
             admin,
             forms,
             path: "/projects",
+            projectPath: "",
             submit: "Update"
           });
         })

@@ -1,10 +1,3 @@
-// new method for string object to convert string to number or string with double quotes
-// String.prototype.convert = function() {
-//   if (this == "undefined" || this == "") return `''`;
-//   if (Number(this).toString() !== "NaN") return Number(this);
-//   return `'${this}'`;
-// };
-
 module.exports = class Project {
   constructor(pool, userid, admin, limit = 2) {
     this.pool = pool;

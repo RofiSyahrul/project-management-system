@@ -1,8 +1,9 @@
 <form action="" method="POST" id="opt">
+  <input type="hidden" name="page" value="<%=current%>">
   <div class="row">
-    <h4 class="col-12 col-sm-3">
+    <h5 class="col-12 col-sm-2">
       Columns
-    </h4>
+    </h5>
     <%_ let n = options.length; -%>
     <%_ let lower = 0, upper = 5; -%>
     <%_ while(lower < n){-%>

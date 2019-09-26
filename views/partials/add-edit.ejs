@@ -2,6 +2,7 @@
   <form action="" method="POST">
     <%_ forms.forEach(form => {-%>
     <%_ if (form.type=='radio'){-%>
+    <!-- RADIO -->
     <fieldset class="form-group">
       <div class="row">
         <legend class="col-form-label col-12 col-sm-3 pt-0"><b><%=form.label%></b></legend>
@@ -19,6 +20,7 @@
       </div>
     </fieldset>
     <%_ } else if (form.type=='checkbox') {-%>
+    <!-- CHECKBOX -->
     <div class="form-group row">
       <div class="col-12 col-sm-3"><b><%=form.label%></b></div>
       <div class="col-12 col-sm-9">
@@ -33,13 +35,29 @@
         <%_ });-%>
       </div>
     </div>
+    <%_ } else if (form.type==='select') {-%>
+    <!-- SELECT -->
+    <div class="form-group row">
+      <div class="col-12 col-sm-3"><b><%=form.label%></b></div>
+      <div class="col-12 col-sm-9">
+        <select name="<%=form.name%>" class="selectpicker form-control" data-live-search="true"
+          title="Choose the <%=form.label.toLowerCase()%>">
+          <%_ form.optValues.forEach((opt, i) => { -%>
+          <option value="<%=opt%>" <%=form.value==opt ? 'selected' : ''%>>
+            <%=form.options[i]%>
+          </option>
+          <%_ });%>
+        </select>
+      </div>
+    </div>
     <%_ } else {-%>
+    <!-- EMAIL, TEXT, PASSWORD, NUMBER, HIDDEN -->
     <div class="form-group row">
       <label for="<%=form.name%>" class="col-12 col-sm-3 col-form-label"><b><%=form.label%></b></label>
       <div class="col-12 col-sm-9">
         <input type="<%=form.type%>" id="<%=form.name%>" placeholder="<%=form.label%>" name="<%=form.name%>"
           maxlength="<%=form.maxlength%>" value="<%=form.value ? form.value : ''%>"
-          <%=form.name=='email' ? 'readonly class=form-control-plaintext' : 'class=form-control'%>>
+          <%=form.ro ? 'readonly class=form-control-plaintext' : 'class=form-control'%>>
       </div>
     </div>
     <%_ }-%>

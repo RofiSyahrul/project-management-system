@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <% include ../../partials/head %>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/sidebar.css">
+</head>
+
+<body>
+  <% include ../../partials/sidebar %>
+  <% include ../../partials/header %>
+  <main role="main" class="col-md-9 ml-sm-auto col-lg-10">
+    <div class="card border-light">
+      <h1 class="card-header bg-transparent">Overview</h1>
+      <div class="card-body">
+        <h3 class="card-title"><%=project%></h3>
+        <div class="card mt-2">
+          <div class="card-body">
+            <h5 class="card-title">Issue tracking</h5>
+            <ul class="list-group">
+              <%_ issues.forEach(issue => {-%>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <%= issue.tracker%>
+                <span class="badge badge-primary badge-pill">
+                  <%=issue.open%> Open / <%=issue.all%>
+                </span>
+              </li>
+              <%_ });-%>
+            </ul>
+          </div>
+        </div>
+        <div class="card mt-2">
+          <div class="card-body">
+            <h5 class="card-title">Members</h5>
+            <ul class="list-group">
+              <%_ members.forEach(member => {-%>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <%=member%>
+              </li>
+              <%_ });-%>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <% include ../../partials/footer %>
+</body>
+
+</html>

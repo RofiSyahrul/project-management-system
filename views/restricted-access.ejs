@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <% include ./partials/head %>
+</head>
+
+<body>
+  <% include ./partials/header %>
+  <div class="card border-light mx-1">
+    <div class="card-body">
+      <div class="alert alert-danger">
+        <strong>Sorry.</strong> You can't access this URL. <br>
+        <a href="/projects" role="button" class="btn btn-primary">Back to Homepage</a>
+      </div>
+    </div>
+  </div>
+  <% include ./partials/footer %>
+</body>
+
+</html>

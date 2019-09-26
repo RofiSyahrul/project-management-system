@@ -7,7 +7,9 @@
         <%_ colNames.forEach(col => {-%>
         <th scope="col"><%=col%></th>
         <%_ });-%>
+        <%_ if(data[0][primaryKey]){-%>
         <th scope="col">Actions</th>
+        <%_}-%>
       </tr>
     </thead>
     <tbody>
@@ -16,16 +18,22 @@
         <%_ colPg.forEach(col => { -%>
         <td>
           <%_ if(col=='projectid'){ -%>
-          <a href="overview/<%=row[col]%>"><%=row[col]%></a>
+          <a href="projects/overview/<%=row[col]%>"><%=row[col]%></a>
           <%_ } else{ -%>
           <%=row[col]%>
           <%_ } -%>
         </td>
         <%_ }); -%>
         <td>
-          <a href="<%=path%>/edit/<%=row[primaryKey]%>" role="button" class="btn btn-success mr-1">Edit</a>
-          <%_ if(admin) {-%>
-          <a href="<%=path%>/delete/<%=row[primaryKey]%>" role="button" class="btn btn-danger">Delete</a>
+          <%_ if(row[primaryKey]){-%>
+          <a href="<%=url.slice(0,url.indexOf('?'))%>/edit/<%=row[primaryKey]%>" role="button" class="btn btn-success mr-1">
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit
+          </a>
+          <%_ if(admin || tableName!=='Projects') {-%>
+          <a href="<%=url.slice(0,url.indexOf('?'))%>/delete/<%=row[primaryKey]%>" role="button" class="btn btn-danger">
+            <i class="fa fa-trash" aria-hidden="true"></i>Delete
+          </a>
+          <%_}%>
           <%_}-%>
         </td>
       </tr>
@@ -33,10 +41,12 @@
     </tbody>
   </table>
 </div>
+<!-- alert on change -->
+<% include ./notif-alert %>
 <!-- Pagination -->
 <% include ./pagination %>
-<%_ } else if (numOfPages==0) {-%>
-<h5>Projects are not found</h5>
+<%_ } else if (colNames.length==0) {-%>
+<h6>No columns displayed</h6>
 <%_ } else {-%>
-<h5>No columns displayed</h5>
+<h6><%=tableName%> are not found</h6>
 <%_ } -%>

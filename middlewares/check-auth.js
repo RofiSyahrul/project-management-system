@@ -1,6 +1,7 @@
-module.exports = (req,res,next) => {
-  console.log(req.originalUrl);
-  
-  if (req.session.user)  next();
-  else res.render('login', {loginAlert: req.flash('loginAlert')[0]});
-}
+module.exports = (req, res, next) => {
+  if (req.session.user) next();
+  else {
+    req.session.url = req.originalUrl;
+    res.redirect("/");
+  }
+};

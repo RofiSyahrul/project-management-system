@@ -23,13 +23,16 @@
 </head>
 
 <body>
-  <form class="form-signin" action="auth" method="post" id="login">
+  <form class="form-signin" action="/auth" method="post" id="login">
     <img class="mb-4" src="/images/rho-pi.png" alt="" width="72" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Project Management System</h1>
     <%_ if (loginAlert) { -%>
     <div class="alert alert-danger"><%=loginAlert%></div>
     <%_ } -%>
-    <input class="form-control" type="email" name="email" placeholder="Email address" form="login" required>
+    <%_ if (latestUrl){-%>
+    <input type="hidden" value="<%=latestUrl%>" name="latestUrl">
+    <%_}-%>
+    <input class="form-control" type="email" name="email" placeholder="Email address" form="login" required autofocus>
     <input class="form-control" type="password" name="password" placeholder="Password" form="login" required>
     <div class="custom-control custom-checkbox mb-3" style="text-align: left">
       <input class="custom-control-input" type="checkbox" value="remember-me" id="remember">
@@ -38,7 +41,6 @@
     <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
     <p class="mt-5 mb-3 text-muted">© Rofi</p>
   </form>
-  <!-- <% include ./partials/footer %> -->
 </body>
 
 </html>

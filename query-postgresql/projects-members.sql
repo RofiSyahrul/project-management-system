@@ -66,4 +66,12 @@ GROUP BY proj.projectid ORDER BY proj.projectid;
 SELECT concat(users.firstname, ' ', users.lastname) member
 FROM users 
 INNER JOIN members ON members.userid = users.userid
-GROUP BY users.userid ORDER BY CONCAT(firstname, ' ', lastname)
+GROUP BY users.userid ORDER BY CONCAT(firstname, ' ', lastname);
+
+-- Filter for members
+SELECT userid, CONCAT(firstname, ' ', lastname) fullname, role
+FROM members
+INNER JOIN users USING (userid)
+WHERE projectid = 2 AND CONCAT(firstname, ' ', lastname) ILIKE '%a%'
+AND userid = 4 AND role = 'Manager'
+ORDER BY userid;

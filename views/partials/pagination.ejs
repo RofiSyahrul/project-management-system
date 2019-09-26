@@ -27,7 +27,7 @@
       <a href="<%=url.replace(`page=${current}`,`page=${current-3}`)%>" class="page-link">...</a>
     </li>
     <%_ } -%>
-    <%_ let upper = numOfPages==4 ? numOfPages : current+2-%>
+    <%_ let upper = current>numOfPages-4 ? numOfPages : current+2-%>
     <%_ for(; i<=upper && i<=numOfPages; i++){ -%>
     <!-- page numbers -->
     <%_ if (i===current) { -%>
@@ -69,4 +69,13 @@
   })
 </script>
 <%_ }-%>
-<%_ } -%>
+<%_ } else {-%>
+<%_ if(url1.includes('page')){-%>
+<script>
+  $(document).ready(() => {
+    $('table').attr('tabindex', -1);
+    $("table").focus();
+  })
+</script>
+<%_ }-%>
+<%_ }-%>

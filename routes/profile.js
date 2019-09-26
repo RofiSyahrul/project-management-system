@@ -3,15 +3,33 @@ const router = express.Router();
 const checkAuth = require("../middlewares/check-auth");
 const User = require("../models/user");
 
-module.exports = (pool, limit = 2) => {
+module.exports = pool => {
   // get profile page
   router.get("/:userid", checkAuth, (req, res) => {
     const user = req.session.user;
     let forms = [
-      { name: "firstname", label: "First name", type: "text", maxlength: 50 },
-      { name: "lastname", label: "Last name", type: "text", maxlength: 50 },
-      { name: "email", label: "Email", type: "text", maxlength: 30 },
-      { name: "password", label: "Password", type: "password", maxlength: 30 },
+      {
+        name: "firstname",
+        label: "First name",
+        type: "text",
+        maxlength: 50,
+        ro: false
+      },
+      {
+        name: "lastname",
+        label: "Last name",
+        type: "text",
+        maxlength: 100,
+        ro: false
+      },
+      { name: "email", label: "Email", type: "text", maxlength: 50, ro: true },
+      {
+        name: "password",
+        label: "Password",
+        type: "password",
+        maxlength: 30,
+        ro: false
+      },
       {
         name: "position",
         label: "Position",
@@ -33,11 +51,12 @@ module.exports = (pool, limit = 2) => {
     res.render("profile/view", {
       title: `${user.nickname} | Profile`,
       path: "/profile",
+      projectPath: "",
       userid: user.userid,
       admin: user.admin,
       notifAlert: req.flash("notif")[0],
       forms,
-      submit: 'Update'
+      submit: "Update"
     });
   });
 

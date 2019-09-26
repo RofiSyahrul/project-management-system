@@ -35,4 +35,12 @@ module.exports = class User {
       userid
     ]);
   }
+
+  static getUsers(pool, userid) {
+    let conditional = "";
+    if (userid) conditional = `WHERE userid = ${userid}`;
+    return pool.query(
+      `SELECT userid, CONCAT(firstname, ' ', lastname) fullname FROM users ${conditional} ORDER BY firstname`
+    );
+  }
 };
