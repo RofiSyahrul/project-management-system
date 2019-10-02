@@ -50,6 +50,10 @@ module.exports = class Member {
   }
 
   find(columns = ["userid", "fullname", "role"], offset = 0) {
+    if (!(arguments[0] instanceof Array) && arguments.length == 1) {
+      columns = ["userid", "fullname", "role"];
+      offset = arguments[0];
+    }
     const pg = {
       userid: "userid",
       fullname: `CONCAT(firstname, ' ', lastname) fullname`,
@@ -105,7 +109,7 @@ module.exports = class Member {
     });
   }
 
-  del(userid = 1){
+  del(userid = 1) {
     const sql = `DELETE FROM members WHERE projectid = $1 AND userid = $2`;
     return this.pool.query(sql, [this.projectId, userid]);
   }

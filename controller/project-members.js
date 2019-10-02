@@ -49,7 +49,7 @@ module.exports = {
       const countPages = members.getConditional(constraints).countPage();
       // filtering active columns from user's session
       const columns = Object.keys(memberopt).filter(opt => memberopt[opt]);
-      const findMembers = members.find(columns, (current - 1) * limit);
+      const findMembers = members.find((current - 1) * limit);
       // getting project's name
       const getProjectName = members.getProjectName();
       // execute queries via promise and render list page for member
@@ -72,6 +72,7 @@ module.exports = {
             url,
             url1,
             notifAlert: req.flash("notifAlert")[0],
+            warningAlert: req.flash("warningAlert")[0],
             numOfPages: results[0],
             data: results[1].rows,
             primaryKey: "userid",
@@ -90,11 +91,10 @@ module.exports = {
   // apply column options
   applyOptions(pool) {
     return (req, res) => {
-      const { projectId } = req.params;
       let { userid, memberopt } = req.session.user;
       userid = Number(userid);
       const columns = req.body.options || [];
-      const { page } = req.body;
+      const { url } = req.body;
 
       memberopt = Object.keys(memberopt).reduce((opts, key) => {
         opts[key] = columns.includes(key);
@@ -104,7 +104,7 @@ module.exports = {
       User.updateOpt(pool, "memberopt", memberopt, userid)
         .then(() => {
           req.session.user.memberopt = memberopt;
-          res.redirect(`/projects/members/${projectId}?page=${page}`);
+          res.redirect(url);
         })
         .catch(e => res.render("error", { message: "Error", error: e }));
     };
@@ -131,33 +131,42 @@ module.exports = {
           let membersNotIn = allMembers.filter(
             member => !membersIn.includes(member.userid)
           );
-          let forms = [
-            {
-              name: "userid",
-              label: "Member",
-              type: "select",
-              options: membersNotIn.map(x => x.fullname),
-              optValues: membersNotIn.map(x => x.userid)
-            },
-            {
-              name: "role",
-              label: "Role",
-              type: "radio",
-              options: roles,
-              optValues: roles
-            }
-          ];
-          res.render("projects/members/add", {
-            title: `${nickname} | Add Member to Project #${projectId}`,
-            userid,
-            admin,
-            path: "/projects",
-            projectPath: "/members",
-            projectId,
-            projectName: projectName[0].projectname,
-            forms,
-            submit: "Save"
-          });
+
+          if (membersNotIn.length == 0) {
+            req.flash(
+              "warningAlert",
+              `All users have been assigned to project #${projectId}`
+            );
+            res.redirect(`/projects/members/${projectId}`);
+          } else {
+            let forms = [
+              {
+                name: "userid",
+                label: "Member",
+                type: "select",
+                options: membersNotIn.map(x => x.fullname),
+                optValues: membersNotIn.map(x => x.userid)
+              },
+              {
+                name: "role",
+                label: "Role",
+                type: "radio",
+                options: roles,
+                optValues: roles
+              }
+            ];
+            res.render("projects/members/add", {
+              title: `${nickname} | Add Member to Project #${projectId}`,
+              userid,
+              admin,
+              path: "/projects",
+              projectPath: "/members",
+              projectId,
+              projectName: projectName[0].projectname,
+              forms,
+              submit: "Save"
+            });
+          }
         })
         .catch(e => res.render("error", { message: "Error", error: e }));
     };

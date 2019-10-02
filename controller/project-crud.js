@@ -55,7 +55,7 @@ module.exports = {
       const pageNumbers = project.getConditional(constraints).countPages();
       const projectOpt = req.session.user.projectopt;
       const columns = Object.keys(projectOpt).filter(opt => projectOpt[opt]);
-      const findProjects = project.find(columns, (current - 1) * limit);
+      const findProjects = project.find((current - 1) * limit);
       const allMember = Project.getMembers(pool);
       Promise.all([pageNumbers, findProjects, allMember])
         .then(results => {
@@ -106,7 +106,7 @@ module.exports = {
     return (req, res) => {
       const userid = Number(req.session.user.userid);
       const columns = req.body.options || [];
-      const { page } = req.body;
+      const { url } = req.body;
 
       let projectOpt = req.session.user.projectopt;
       projectOpt = Object.keys(projectOpt).reduce((opts, key) => {
@@ -117,7 +117,7 @@ module.exports = {
       User.updateOpt(pool, "projectopt", projectOpt, userid)
         .then(() => {
           req.session.user.projectopt = projectOpt;
-          res.redirect(`/projects?page=${page}`);
+          res.redirect(url);
         })
         .catch(e => res.render("error", { message: "Error", error: e }));
     };

@@ -10,7 +10,8 @@
 <body>
   <% include ../../partials/sidebar %>
   <% include ../../partials/header %>
-  <main role="main" class="col-md-9 ml-sm-auto col-lg-10">
+  <main role="main" class="col-md-10 ml-sm-auto col-lg-11">
+    <% include ../../partials/warning-alert %>
     <div class="card border-light mx-1">
       <h1 class="card-header bg-transparent">Members of Project #<%=projectId%> (<%=projectName%>)</h1>
       <div class="card-body">

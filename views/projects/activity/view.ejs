@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <% include ../../partials/head %>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/sidebar.css">
+</head>
+
+<body>
+  <% include ../../partials/sidebar %>
+  <% include ../../partials/header %>
+  <main role="main" class="col-md-10 ml-sm-auto col-lg-11">
+    <div class="card border-light">
+      <h1 class="card-header bg-transparent">Activity</h1>
+      <%_ if(numOfPages>0){-%>
+      <div class="card-body">
+        <h3 class="card-title"><%=actsPerDate[0].data[0].projectname%></h3>
+        <%_ actsPerDate.forEach(act => {-%>
+        <div class="card mt-2">
+          <div class="card-body">
+            <h5 class="card-title"><%=act.date%></h5>
+            <ul class="list-group">
+              <%_ act.data.forEach(item => {-%>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="row justify-content-between">
+                  <span class="badge badge-primary badge-pill mx-1">
+                    <%=item.time%>
+                  </span>
+                  <span class="mx-1">
+                    <%=item.title%> - <%=item.description%>
+                  </span>
+                </div>
+                <span class="mx-1">
+                  Author: <%=item.author_name%>
+                </span>
+              </li>
+              <%_ });-%>
+            </ul>
+          </div>
+        </div>
+        <%_ });-%>
+        <div class="mt-2" style="align-content: center">
+          <% include ../../partials/pagination %>
+        </div>
+      </div>
+      <%_ } else { -%>
+      <div class="alert alert-info alert-server my-1" role="alert">
+        Project #<%=projectId%> does not have any activities.
+        Edit or delete an issue in project #<%=projectId%> to create an activity in this project.
+      </div>
+      <%_ } -%>
+    </div>
+    <form action="" method="GET">
+      <input type="hidden" name="page" value="1">
+    </form>
+  </main>
+  <% include ../../partials/footer %>
+</body>
+
+</html>

@@ -1,6 +1,6 @@
-<div class="col-md-2 d-md-flex bg-light sidebar collapse navbar-collapse" id="sidebar">
+<div class="d-md-flex bg-light sidebar collapse navbar-collapse" id="sidebar">
   <div class="sidebar-sticky">
-    <ul class="nav flex-column">
+    <ul class="nav flex-column nav-pills">
       <li class="nav-item">
         <a class="nav-link <%=projectPath=='/overview' ? 'active' : ''%>" href="/projects/overview/<%=projectId%>">
           Overview
@@ -12,7 +12,7 @@
         </a>
       </li>
     </ul>
-    <ul class="nav flex-column">
+    <ul class="nav flex-column nav-pills">
       <li class="nav-item">
         <a class="nav-link <%=projectPath=='/members' ? 'active' : ''%>" href="/projects/members/<%=projectId%>">
           Members

@@ -5,6 +5,8 @@ const checkAccess = require("../middlewares/check-access");
 const Project = require("../controller/project-crud");
 const getOverview = require("../controller/project-overview");
 const Member = require("../controller/project-members");
+const Issue = require("../controller/project-issues");
+const Activity = require("../controller/project-activity");
 
 module.exports = (pool, limit = 2) => {
   router.get("/", checkAuth, Project.getList(pool, limit));
@@ -70,6 +72,51 @@ module.exports = (pool, limit = 2) => {
     checkAccess(pool),
     Member.del(pool, limit)
   );
-  
+
+  router.get(
+    "/issues/:projectId",
+    checkAuth,
+    checkAccess(pool),
+    Issue.getList(pool, limit)
+  );
+
+  router.post("/issues/:projectId", checkAuth, Issue.applyOptions(pool));
+
+  router.get(
+    "/issues/:projectId/add",
+    checkAuth,
+    checkAccess(pool),
+    Issue.add(pool)
+  );
+
+  router.post("/issues/:projectId/add", checkAuth, Issue.save(pool, limit));
+
+  router.get(
+    "/issues/:projectId/edit/:issueId",
+    checkAuth,
+    checkAccess(pool),
+    Issue.edit(pool)
+  );
+
+  router.post(
+    "/issues/:projectId/edit/:issueId",
+    checkAuth,
+    Issue.update(pool, limit)
+  );
+
+  router.get(
+    "/issues/:projectId/delete/:issueId",
+    checkAuth,
+    checkAccess(pool),
+    Issue.del(pool, limit)
+  );
+
+  router.get(
+    "/activity/:projectId",
+    checkAuth,
+    checkAccess(pool),
+    Activity.view(pool, limit)
+  );
+
   return router;
 };

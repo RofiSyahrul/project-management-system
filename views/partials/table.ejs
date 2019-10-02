@@ -5,28 +5,37 @@
     <thead>
       <tr>
         <%_ colNames.forEach(col => {-%>
-        <th scope="col"><%=col%></th>
+        <th scope="col" style="vertical-align:middle"><%=col%></th>
         <%_ });-%>
-        <%_ if(data[0][primaryKey]){-%>
-        <th scope="col">Actions</th>
-        <%_}-%>
+        <th scope="col" style="vertical-align:middle">Actions</th>
       </tr>
     </thead>
     <tbody>
       <%_ data.forEach(row => { -%>
       <tr tabindex="-1">
         <%_ colPg.forEach(col => { -%>
-        <td>
+        <td style="vertical-align:middle">
           <%_ if(col=='projectid'){ -%>
           <a href="projects/overview/<%=row[col]%>"><%=row[col]%></a>
+          <%_ } else if(col=='files'){ -%>
+            <%_ let ext = pathLib.extname(row[col])-%>
+            <%_ let fileName = pathLib.basename(row[col])-%>
+            <%_ fileName = fileName.split('-').slice(3).join('-')-%>
+            <a href="<%=row[col]%>">
+              <%_ if (['.jpg','.jpeg', '.png', '.ico'].includes(ext)){-%>
+              <img src="<%=row[col]%>" alt="<%=fileName%>" height="75">
+              <%_ } else {-%>
+              <%=fileName%>
+              <%_ } -%>
+            </a>
           <%_ } else{ -%>
           <%=row[col]%>
           <%_ } -%>
         </td>
         <%_ }); -%>
-        <td>
-          <%_ if(row[primaryKey]){-%>
-          <a href="<%=url.slice(0,url.indexOf('?'))%>/edit/<%=row[primaryKey]%>" role="button" class="btn btn-success mr-1">
+        <td style="vertical-align:middle">
+          <a href="<%=url.slice(0,url.indexOf('?'))%>/edit/<%=row[primaryKey]%>" role="button"
+            class="btn btn-success mr-1">
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit
           </a>
           <%_ if(admin || tableName!=='Projects') {-%>
@@ -34,7 +43,6 @@
             <i class="fa fa-trash" aria-hidden="true"></i>Delete
           </a>
           <%_}%>
-          <%_}-%>
         </td>
       </tr>
       <%_ }); -%>
@@ -49,4 +57,12 @@
 <h6>No columns displayed</h6>
 <%_ } else {-%>
 <h6><%=tableName%> are not found</h6>
+<%_ if(url1.includes('page')){-%>
+<script>
+  $(document).ready(() => {
+    $('.fa-plus').attr('tabindex', -1);
+    $(".fa-plus").focus();
+  })
+</script>
+<%_ }-%>
 <%_ } -%>

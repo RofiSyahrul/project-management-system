@@ -66,6 +66,10 @@ module.exports = class Project {
   }
 
   find(columns = ["id", "name", "member"], offset = 0) {
+    if (!(arguments[0] instanceof Array) && arguments.length == 1) {
+      columns = ["id", "name", "member"];
+      offset = arguments[0];
+    }
     const pg = {
       id: "proj.projectid",
       name: "proj.projectname",
@@ -113,7 +117,7 @@ module.exports = class Project {
                 const maxId = Number(result.rows[0].max);
                 this.insertMember(maxId, usersId)
                   .then(() => {
-                    resolve(`Project has been added`);
+                    resolve(`Project '${name}' has been added`);
                   })
                   .catch(e => reject(e));
               })
@@ -147,7 +151,7 @@ module.exports = class Project {
   }
 
   del(projectId = 1) {
-    const sql = 'DELETE FROM projects WHERE projectid = $1';
-    return this.pool.query(sql, [projectId])
+    const sql = "DELETE FROM projects WHERE projectid = $1";
+    return this.pool.query(sql, [projectId]);
   }
 };

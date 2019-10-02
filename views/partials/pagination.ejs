@@ -62,7 +62,7 @@
     <%_} -%>
   </ul>
 </nav>
-<%_ if(url1.includes('page')){-%>
+<%_ if(url1.includes('page') && projectPath!='/activity'){-%>
 <script>
   $(() => {
     $("#pagination").focus();

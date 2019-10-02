@@ -1,6 +1,6 @@
 <form action="" method="GET" id="filter">
   <input type="hidden" name="page" value="1" form="filter">
-  <%_ forms.forEach(form => {-%>
+  <%_ forms.forEach((form,i) => {-%>
   <div class="form-group row">
     <!-- Checkbox & Label-->
     <div class="custom-control custom-checkbox col-12 col-sm-3">
@@ -12,13 +12,21 @@
     <div class="col-12 col-sm-9">
       <%_ if (form.type==='select') {-%>
       <select name="<%=form.name%>" form="filter" class="selectpicker form-control" data-live-search="true"
-        title="Choose the <%=form.label.toLowerCase()%>">
+        title="<%=form.name=='done' ? 'Percentage' : `Choose the ${form.label.toLowerCase()}`%>">
         <%_ form.optValues.forEach((opt, i) => { -%>
         <option value="<%=opt%>" <%=checked.includes(form.name) ? (form.value==opt ? 'selected' : '') : ''%>>
           <%=form.options[i]%>
         </option>
         <%_ });%>
       </select>
+      <%_ } else if (form.type==='date'){-%>
+      <input id="datepicker<%=i%>" width="auto" name="<%=form.name%>" placeholder="<%=form.label%>" form="filter"
+        value="<%=checked.includes(form.name) ? form.value : ''%>">
+      <script>
+        $('#datepicker<%=i%>').datepicker({
+          uiLibrary: 'bootstrap4'
+        });
+      </script>
       <%_ } else {-%>
       <input type="<%=form.type%>" class="form-control" name="<%=form.name%>" placeholder="<%=form.label%>"
         form="filter" value="<%=checked.includes(form.name) ? form.value : ''%>">
