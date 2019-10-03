@@ -1,9 +1,11 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
+const checkAuth = require("../middlewares/check-auth");
+const checkAccess = require("../middlewares/check-access");
+const User = require("../controllers/user-crud");
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+module.exports = (pool, limit = 2) => {
+  router.get("/", checkAuth, checkAccess(pool), User.getList(pool, limit));
 
-module.exports = router;
+  return router;
+};

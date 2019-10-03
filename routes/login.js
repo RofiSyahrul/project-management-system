@@ -19,7 +19,7 @@ module.exports = pool => {
     }
   );
 
-  router.post("/auth", (req, res, next) => {
+  router.post("/auth", (req, res) => {
     let { email, password, latestUrl } = req.body;
     latestUrl = latestUrl || "/projects";
     const user = new User(pool, email);

@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const checkAuth = require("../middlewares/check-auth");
 const checkAccess = require("../middlewares/check-access");
-const Project = require("../controller/project-crud");
-const getOverview = require("../controller/project-overview");
-const Member = require("../controller/project-members");
-const Issue = require("../controller/project-issues");
-const Activity = require("../controller/project-activity");
+const Project = require("../controllers/project-crud");
+const getOverview = require("../controllers/project-overview");
+const Member = require("../controllers/project-members");
+const Issue = require("../controllers/project-issues");
+const Activity = require("../controllers/project-activity");
 
 module.exports = (pool, limit = 2) => {
   router.get("/", checkAuth, Project.getList(pool, limit));
