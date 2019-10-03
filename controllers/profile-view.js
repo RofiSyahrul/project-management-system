@@ -82,6 +82,7 @@ module.exports = {
           userid: user.userid,
           admin: user.admin,
           notifAlert: req.flash("notif")[0],
+          warningAlert: req.flash("warningAlert")[0],
           forms,
           submit: "Update"
         });
@@ -110,7 +111,12 @@ module.exports = {
 
       let { password, firstname, lastname, position, fulltime } = req.body;
       fulltime = fulltime === "Fulltime";
-      password = password.trim().length > 0 ? password : user.password;
+      if (user.is_owner) {
+        password = password.trim().length > 0 ? password : user.password;
+      } else {
+        password = user.password;
+        req.flash("warningAlert", "Only the <b>OWNER</b> can edit password");
+      }
       firstname =
         firstname.trim().length > 0 ? firstname.trim() : user.firstname;
       lastname = lastname.trim().length > 0 ? lastname.trim() : user.lastname;
