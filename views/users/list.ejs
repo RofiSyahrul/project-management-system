@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <% include ../partials/head %>
+</head>
+
+<body>
+  <% include ../partials/header %>
+  <div class="card border-light mx-1">
+    <h1 class="card-header bg-transparent">Users</h1>
+    <div class="card-body">
+      <div class="card border-light">
+        <div class="card-body">
+          <!-- Filter -->
+          <h2>Filter</h2>
+          <div class="container">
+            <% include ../partials/form-filter %>
+          </div>
+        </div>
+      </div>
+      <div class="card border-light">
+        <div class="card-body">
+          <!-- Options -->
+          <h2>Options</h2>
+          <% include ../partials/options %>
+        </div>
+      </div>
+      <div class="card border-light">
+        <div class="card-body">
+          <!-- Table and Pagination -->
+          <% include ../partials/table %>
+          <!-- add button -->
+          <a role="button" class="btn btn-primary my-1" href="projects/add">
+            <i class="fa fa-plus" aria-hidden="true"></i>Add user
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% include ../partials/footer %>
+</body>
+
+</html>
