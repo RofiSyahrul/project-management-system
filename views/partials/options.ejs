@@ -5,7 +5,8 @@
       Columns
     </h5>
     <%_ let n = options.length; -%>
-    <%_ let lower = 0, upper = 5; -%>
+    <%_ let interval = path=='/users' ? 3 : 5-%>
+    <%_ let lower = 0, upper = interval; -%>
     <%_ while(lower < n){-%>
     <div class="col">
       <%_ upper = n>upper ? upper : n; -%>
@@ -19,7 +20,7 @@
       </div>
       <%_ });-%>
     </div>
-    <%_ lower += 5, upper += 5 -%>
+    <%_ lower += interval, upper += interval -%>
     <%_ }-%>
   </div>
   <!-- Apply button -->
