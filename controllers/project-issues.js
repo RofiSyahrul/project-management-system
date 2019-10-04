@@ -149,11 +149,7 @@ module.exports = {
       const columns = Object.keys(issueopt).filter(opt => issueopt[opt]);
 
       // define forms for filter
-      let forms = [
-        ...options.slice(0, 3),
-        ...options.slice(4, 9),
-        options[10]
-      ];
+      let forms = [...options.slice(0, 3), ...options.slice(4, 9), options[10]];
       forms = forms.map((form, i) => {
         return Object.assign(
           {
@@ -208,12 +204,14 @@ module.exports = {
           data.forEach((row, i) => {
             data[i].startdate = moment(row.startdate).format("MMMM Do, YYYY");
             data[i].duedate = moment(row.duedate).format("MMMM Do, YYYY");
-            data[i].updateddate = moment(row.updateddate).format(
-              "MMMM Do, YYYY - HH:mm:ss"
-            );
-            data[i].createddate = moment(row.createddate).format(
-              "MMMM Do, YYYY - HH:mm:ss"
-            );
+            data[i].updateddate = moment
+              .parseZone(row.updateddate)
+              .local()
+              .format("MMMM Do, YYYY - HH:mm:ss");
+            data[i].createddate = moment
+              .parseZone(row.createddate)
+              .local()
+              .format("MMMM Do, YYYY - HH:mm:ss");
           });
           res.render("projects/issues/list", {
             title,

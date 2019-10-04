@@ -29,7 +29,10 @@ module.exports = {
 
       const activities = new Activity(pool, projectId);
       const countPages = activities.countPages(daysLimit);
-      const findActivities = activities.find(daysLimit, (current - 1) * daysLimit);
+      const findActivities = activities.find(
+        daysLimit,
+        (current - 1) * daysLimit
+      );
 
       Promise.all([countPages, findActivities])
         .then(results => {
@@ -45,11 +48,11 @@ module.exports = {
           dates = dates.filter(
             (date, index, arr) => arr.indexOf(date) == index
           );
-          console.log(dates);
+
           let actsPerDate = dates.map(date => {
             let dataInDate = data.filter(item => item.date == date);
             dataInDate = dataInDate.map(item => {
-              item.time = moment(item.time, "HH:mm:ss.SSS").format("HH:mm:ss");
+              item.time = moment(item.time).format("HH:mm:ss");
               return item;
             });
             return {
