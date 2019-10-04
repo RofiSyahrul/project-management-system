@@ -60,14 +60,17 @@ module.exports = class Activity {
   }
 
   find(daysLimit = 2, offset = 0) {
-    let subquery = `SELECT DISTINCT time::date FROM activities`;
+    let subquery = `SELECT DISTINCT (time AT TIME ZONE 'Asia/Jakarta' AT TIME ZONE 'utc')::DATE FROM activities`;
     subquery += ` ORDER BY time DESC LIMIT ${daysLimit} OFFSET ${offset}`;
 
-    let sql = `SELECT time::date as date, time::time as time, title, description, CONCAT(firstname, ' ', lastname) author_name, projectname`;
+    let sql = `SELECT (time AT TIME ZONE 'Asia/Jakarta' AT TIME ZONE 'utc')::DATE AS date`;
+    sql += `, (time AT TIME ZONE 'Asia/Jakarta' AT time zone 'utc')::time as time`;
+    sql += `, title, description, CONCAT(firstname, ' ', lastname) author_name, projectname`;
     sql += ` FROM activities, users, projects`;
-    sql += ` WHERE author = userid AND activities.projectid = projects.projectid`
+    sql += ` WHERE author = userid AND activities.projectid = projects.projectid`;
     sql += ` AND activities.projectid = ${this.projectId}`;
-    sql += ` AND time::date IN (${subquery}) ORDER BY activities.time DESC`;
+    sql += ` AND (time AT TIME ZONE 'Asia/Jakarta' AT TIME ZONE 'utc')::DATE IN (${subquery})`;
+    sql += ` ORDER BY activities.time DESC`;
 
     return this.pool.query(sql);
   }
