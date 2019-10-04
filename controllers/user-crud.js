@@ -1,7 +1,7 @@
 const User = require("../models/user");
 
 const positions = ["Manager", "Software Developer", "Quality Assurance"];
-const jobTypes = ["Fulltime", "Parttime"];
+const jobTypes = ["Full time", "Part time"];
 
 const colOptionsName = [
   "userid",
@@ -34,7 +34,7 @@ const formAddNames = [
 const formAddLabels = [
   "First name",
   "Last name",
-  "Nick name",
+  "Nickname",
   "Email",
   "Password",
   "Position",
@@ -49,7 +49,7 @@ const formAddTypes = [
   "radio",
   "checkbox"
 ];
-const formAddOptions = [, , , , , positions, ["Fulltime"]];
+const formAddOptions = [, , , , , positions, ["Full time"]];
 
 module.exports = {
   getList(pool, limit) {
@@ -84,7 +84,7 @@ module.exports = {
         .map(form => form.name)
         .reduce((obj, name) => {
           let value = query[name];
-          if (name == "fulltime") value = value == "Fulltime"; // change value to boolean
+          if (name == "fulltime") value = value == "Full time"; // change value to boolean
           obj[name] = checked.includes(name) ? value : undefined;
           return obj;
         }, {});
@@ -100,9 +100,10 @@ module.exports = {
       Promise.all([countPages, getAllUsers]).then(results => {
         let data = results[1].rows;
         data = data.map(item => {
-          item.fulltime = item.fulltime ? "Fulltime" : "Parttime";
+          item.fulltime = item.fulltime ? "Full time" : "Part time";
           return item;
         });
+
         res.render("users/list", {
           title,
           path: "/users",
@@ -118,6 +119,7 @@ module.exports = {
           url,
           url1,
           notifAlert: req.flash("notifAlert")[0],
+          warningAlert: req.flash("warningAlert")[0],
           numOfPages: results[0],
           data,
           primaryKey: "userid",
@@ -129,6 +131,229 @@ module.exports = {
             .map(opt => opt.colPg)
         });
       });
+    };
+  },
+
+  applyOptions(pool) {
+    return (req, res) => {
+      let { userid, useropt } = req.session.user;
+      userid = Number(userid);
+      const columns = req.body.options || [];
+      const { url } = req.body;
+
+      useropt = Object.keys(useropt).reduce((opts, key) => {
+        opts[key] = columns.includes(key);
+        return opts;
+      }, {});
+
+      User.updateOpt(pool, "useropt", useropt, userid)
+        .then(() => {
+          req.session.user.useropt = useropt;
+          res.redirect(url);
+        })
+        .catch(e => res.render("error", { message: "Error", error: e }));
+    };
+  },
+
+  add() {
+    return (req, res) => {
+      const { userid, admin, nickname } = req.session.user;
+
+      let forms = formAddNames.map((name, i) => {
+        return {
+          name,
+          label: formAddLabels[i],
+          type: formAddTypes[i],
+          maxlength: 30,
+          options: formAddOptions[i],
+          optValues: formAddOptions[i],
+          req: name != "fulltime"
+        };
+      });
+
+      res.render("users/add", {
+        title: `${nickname} | Add User`,
+        userid,
+        admin,
+        forms,
+        path: "/projects",
+        projectPath: "",
+        submit: "Save"
+      });
+    };
+  },
+
+  save(pool, limit = 2) {
+    return (req, res) => {
+      let data = req.body;
+      data.fulltime = data.fulltime == "Full time";
+
+      const users = new User(pool, undefined, limit);
+      users
+        .save(data)
+        .then(() => {
+          req.flash(
+            "notifAlert",
+            `New user (${data.firstname} ${data.lastname}) has been added.`
+          );
+          // redirect to the last page
+          users
+            .countPage()
+            .then(lastPage => {
+              res.redirect(`/users?page=${lastPage}`);
+            })
+            .catch(e => res.render("error", { message: "Error", error: e }));
+        })
+        .catch(e => res.render("error", { message: "Error", error: e }));
+    };
+  },
+
+  edit(pool) {
+    return (req, res) => {
+      const { userId } = req.params;
+      const { userid, admin, nickname } = req.session.user;
+
+      let forms = formAddNames.map((name, i) => {
+        return {
+          name,
+          label: formAddLabels[i],
+          type: formAddTypes[i],
+          maxlength: 30,
+          options: formAddOptions[i],
+          optValues: formAddOptions[i],
+          req: !["fulltime", "password"].includes(name),
+          ro: name == "email"
+        };
+      });
+
+      User.findById(pool, userId)
+        .then(result => {
+          const data = result.rows[0];
+          data.fulltime = data.fulltime ? "Full time" : "";
+          data.password = "";
+          forms = forms.map(form => {
+            return Object.assign({ value: data[form.name] }, form);
+          });
+          forms.push(
+            ...Object.keys(data).map(key => {
+              return {
+                name: key + "OldValue",
+                type: "hidden",
+                value: data[key]
+              };
+            })
+          );
+          res.render("users/edit", {
+            title: `${nickname} | Edit User`,
+            userid,
+            admin,
+            path: "/users",
+            projectPath: "",
+            forms,
+            submit: "Update"
+          });
+        })
+        .catch(e => res.render("error", { message: "Error", error: e }));
+    };
+  },
+
+  update(pool, limit) {
+    return (req, res) => {
+      const { userId } = req.params;
+      const { is_owner } = req.session.user;
+
+      const keys = Object.keys(req.body);
+      const keysOldValue = keys.filter(key => key.match(/(OldValue)$/));
+      let keysNewValue = keys.filter(key => !key.match(/(OldValue)$/));
+      if (!keysNewValue.includes("fulltime")) keysNewValue.push("fulltime");
+
+      const oldValues = keysOldValue.reduce((obj, key) => {
+        obj[key] = req.body[key];
+        return obj;
+      }, {});
+
+      // filtering all new values that differ from the related old value
+      let newValues = keysNewValue.reduce((obj, key) => {
+        if (key == "fulltime") {
+          const oldCond = oldValues[`${key}OldValue`] == "Full time";
+          const newCond = req.body[key] || "";
+          if ((oldCond && newCond == "") || (!oldCond && newCond != ""))
+            obj[key] = newCond == "Full time";
+        } else if (
+          oldValues[`${key}OldValue`] !== req.body[key] &&
+          req.body[key].trim().length > 0
+        ) {
+          obj[key] = req.body[key];
+        }
+        return obj;
+      }, {});
+
+      if (newValues.password && !is_owner) {
+        // could not update password
+        delete newValues.password;
+        req.flash(
+          "warningAlert",
+          "<b>Sorry.</b> Only the owner can edit password."
+        );
+      }
+
+      const user = new User(pool, undefined, limit);
+      user
+        .update(newValues, userId)
+        .then(message => {
+          req.flash("notifAlert", message);
+          // redirect to the page where userid is located
+          user.conditional += ` AND userid <= ${userId}`;
+          user
+            .countPage()
+            .then(pageNum => {
+              res.redirect(`/users?page=${pageNum}`);
+            })
+            .catch(e => res.render("error", { message: "Error", error: e }));
+        })
+        .catch(e => res.render("error", { message: "Error", error: e }));
+    };
+  },
+
+  del(pool, limit = 2) {
+    return (req, res) => {
+      const { userId } = req.params;
+      const { is_owner } = req.session.user;
+
+      const users = new User(pool, undefined, limit);
+      users.conditional += ` AND userid <= ${userId}`;
+      users
+        .countPage()
+        .then(pageNum => {
+          if (is_owner) {
+            users
+              .del(userId)
+              .then(() => {
+                users.conditional = `WHERE userid != 1`;
+                users
+                  .countPage()
+                  .then(lastPage => {
+                    req.flash(
+                      "notifAlert",
+                      `User #${userId} has been deleted.`
+                    );
+                    if (pageNum > lastPage) pageNum = lastPage;
+                    res.redirect(`/users?page=${pageNum}`);
+                  })
+                  .catch(e =>
+                    res.render("error", { message: "Error", error: e })
+                  );
+              })
+              .catch(e => res.render("error", { message: "Error", error: e }));
+          } else {
+            req.flash(
+              "warningAlert",
+              "<b>Sorry.</b> Only the owner can delete user."
+            );
+            res.redirect(`/users?page=${pageNum}`);
+          }
+        })
+        .catch(e => res.render("error", { message: "Error", error: e }));
     };
   }
 };

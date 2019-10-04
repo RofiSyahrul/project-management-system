@@ -79,33 +79,36 @@
     <!-- FILE -->
     <div class="form-group row">
       <label for="<%=form.name%>" class="col-12 col-sm-3 col-form-label"><b><%=form.label%></b></label>
-      <div class="col-12 col-sm-9">
-        <input type="file" id="<%=form.name%>" placeholder="<%=form.label%>" name="<%=form.name%>" class="form-control"
-          <%=form.req ? 'required' : ''%>>
-        <div class="row mx-1">
-          <output id="list<%=form.name%>">
-            <%_ if(form.value && form.value!=''){-%>
-            <span id="img">
-              <%_ let ext = pathLib.extname(form.value)-%>
-              <%_ let fileName = pathLib.basename(form.value)-%>
-              <%_ fileName = fileName.split('-').slice(3).join('-')-%>
-              <%_ if(['.jpg', '.jpeg', '.png', '.ico'].includes(ext)){-%>
-              <div><%=fileName%></div>
-              <img class="thumb" src="<%=form.value%>" alt="<%=fileName%>">
-              <script>
-                $(".thumb")
-                  .css({ 'height': '75px', 'border': '1px solid #000', 'margin': '10px 5px 0 0' });
-              </script>
-              <%_ } else {-%>
-              <a href="<%=form.value%>"><%=fileName%></a>
-              <%_ } -%>
-            </span>
-            <%_ }-%>
-          </output>
+      <div class="col-6 col-sm-3">
+        <div class="custom-file">
+          <input type="file" id="<%=form.name%>" placeholder="<%=form.label%>" name="<%=form.name%>"
+            class="custom-file-input" <%=form.req ? 'required' : ''%>>
+          <label for="<%=form.name%>" class="custom-file-label">Choose a file</label>
+        </div>
+        <div class="row ml-1" id="list<%=form.name%>">
+          <%_ if(form.value && form.value!=''){-%>
+          <span id="img">
+            <%_ let ext = pathLib.extname(form.value)-%>
+            <%_ let fileName = pathLib.basename(form.value)-%>
+            <%_ fileName = fileName.split('-').slice(3).join('-')-%>
+            <%_ if(['.jpg', '.jpeg', '.png', '.ico'].includes(ext)){-%>
+            <div><%=fileName%></div>
+            <img class="thumb" src="<%=form.value%>" alt="<%=fileName%>">
+            <script>
+              $(".thumb")
+                .css({ 'height': '75px', 'border': '1px solid #000', 'margin': '10px 5px 0 0' });
+            </script>
+            <%_ } else {-%>
+            <a href="<%=form.value%>"><%=fileName%></a>
+            <%_ } -%>
+          </span>
+          <%_ }-%>
         </div>
       </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
     <script>
+      bsCustomFileInput.init()
       $('#<%=form.name%>').change(event => {
         $("#img").remove();
         let file = event.target['<%=form.name%>'];

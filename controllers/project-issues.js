@@ -144,6 +144,7 @@ module.exports = {
       });
       options[6].name = "assignee";
       options[14].name = "author";
+      options[18].name = "parenttask";
 
       // filtering active columns from user's session
       const columns = Object.keys(issueopt).filter(opt => issueopt[opt]);

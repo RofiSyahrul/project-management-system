@@ -1,6 +1,8 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
+
 const router = express.Router();
-const User = require('../models/user');
 
 module.exports = pool => {
   /* GET login page. */
@@ -11,7 +13,6 @@ module.exports = pool => {
       else next();
     },
     (req, res) => {
-      console.log("latest url: ", req.session.url);
       res.render("login", {
         loginAlert: req.flash("loginAlert")[0],
         latestUrl: req.session.url
@@ -27,7 +28,8 @@ module.exports = pool => {
       if (result.rows.length > 0) {
         // email found
         const pwd = result.rows[0].password;
-        if (password == pwd) {
+        const isMatch = bcrypt.compareSync(password, pwd);
+        if (isMatch) {
           // password correct
           req.session.user = result.rows[0];
           let nickname = req.session.user.nickname;

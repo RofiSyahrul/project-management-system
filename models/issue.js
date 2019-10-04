@@ -110,7 +110,8 @@ module.exports = class Issue {
 
   update(data = {}, issueid = 1, closed = false) {
     return new Promise((resolve, reject) => {
-      if (data == {}) resolve(`No updates on issue #${issueid}`);
+      if (Object.keys(data).length == 0)
+        resolve(`No updates on issue #${issueid}`);
       else {
         const colNames = Object.keys(data);
         const columns = colNames
@@ -134,7 +135,7 @@ module.exports = class Issue {
     });
   }
 
-  del(issueid = 1){
+  del(issueid = 1) {
     let sql = `DELETE FROM issues WHERE issueid = ${issueid}`;
     return this.pool.query(sql);
   }
