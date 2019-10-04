@@ -85,10 +85,9 @@ const formTypes = [
   "select",
   "date",
   "date",
-  "select",
-  "date"
+  "select"
 ];
-const formOptions = [[], tracker, [], status, priority, [], [], [], done, []];
+const formOptions = [[], tracker, [], status, priority, [], [], [], done];
 
 const addTypes = [
   "radio",
@@ -153,8 +152,7 @@ module.exports = {
       let forms = [
         ...options.slice(0, 3),
         ...options.slice(4, 9),
-        options[10],
-        options[16]
+        options[10]
       ];
       forms = forms.map((form, i) => {
         return Object.assign(
