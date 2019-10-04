@@ -23,17 +23,17 @@
             <ul class="list-group">
               <%_ act.data.forEach(item => {-%>
               <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="row justify-content-between">
-                  <span class="badge badge-primary badge-pill mx-1">
+                <div class="row container-fluid">
+                  <span class="badge badge-primary badge-pill">
                     <%=item.time%> UTC
                   </span>
-                  <span class="mx-1">
+                  <div class="col-12 col-sm-12 mt-1">
                     <%=item.title%> - <%=item.description%>
-                  </span>
+                  </div>
+                  <div class="col-12 col-sm-12 mt-1">
+                    Author: <%=item.author_name%>
+                  </div>
                 </div>
-                <span class="mx-1">
-                  Author: <%=item.author_name%>
-                </span>
               </li>
               <%_ });-%>
             </ul>
