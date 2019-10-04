@@ -52,7 +52,8 @@ module.exports = {
           let actsPerDate = dates.map(date => {
             let dataInDate = data.filter(item => item.date == date);
             dataInDate = dataInDate.map(item => {
-              item.time = moment(item.time).format("HH:mm:ss");
+              console.log(item.time);
+              item.time = moment(item.time, 'HH:mm:ss.SSS').format("HH:mm:ss");
               return item;
             });
             return {
