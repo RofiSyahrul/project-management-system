@@ -1,7 +1,8 @@
 <!-- Navbar for table pagination -->
 <%_ if (numOfPages>1){ -%>
 <!-- adapted from: https://evdokimovm.github.io/javascript/nodejs/mongodb/pagination/expressjs/ejs/bootstrap/2017/08/20/create-pagination-with-nodejs-mongodb-express-and-ejs-step-by-step-from-scratch.html -->
-<nav id="pagination" aria-label="Table page" <%=url1.includes('page') ? 'tabindex=-1' : ''%>>
+<nav id="pagination" aria-label="Table page" class="table-responsive mb-2"
+  <%=url1.includes('page') ? 'tabindex=-1' : ''%>>
   <ul class="pagination text-center <%=projectPath=='/activity' ? `justify-content-center` : ''%>">
     <!-- first -->
     <%_ if (current>4) { -%>
