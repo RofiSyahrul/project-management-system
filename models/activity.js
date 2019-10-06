@@ -61,6 +61,7 @@ module.exports = class Activity {
 
   find(daysLimit = 2, offset = 0) {
     let subquery = `SELECT DISTINCT (time AT TIME ZONE 'Asia/Jakarta' AT TIME ZONE 'utc')::DATE FROM activities`;
+    subquery += ` WHERE projectid = ${this.projectId}`;
     subquery += ` ORDER BY (time AT TIME ZONE 'Asia/Jakarta' AT TIME ZONE 'utc')::DATE DESC LIMIT ${daysLimit} OFFSET ${offset}`;
 
     let sql = `SELECT (time AT TIME ZONE 'Asia/Jakarta' AT TIME ZONE 'utc')::DATE AS date`;
