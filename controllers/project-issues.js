@@ -465,14 +465,14 @@ module.exports = {
 
       if (req.files) {
         // delete old file
-        fs.unlinkSync(
-          path.join(
-            __dirname,
-            "..",
-            "public",
-            ...oldValues.filesOldValue.split("/").slice(1)
-          )
-        );
+        // fs.unlinkSync(
+        //   path.join(
+        //     __dirname,
+        //     "..",
+        //     "public",
+        //     ...oldValues.filesOldValue.split("/").slice(1)
+        //   )
+        // );
         let file = req.files.files;
         const { fileName, filePath } = createFileName(file.name, projectId);
         newValues.files = `/uploaded/${fileName}`;

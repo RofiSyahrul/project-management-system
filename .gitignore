@@ -3,3 +3,6 @@ package-lock.json
 .jshintrc
 problems
 encrypt-password
+server.csr
+server.key
+server.pass.key
