@@ -6,3 +6,5 @@ encrypt-password
 server.csr
 server.key
 server.pass.key
+query-postgresql
+app.js
